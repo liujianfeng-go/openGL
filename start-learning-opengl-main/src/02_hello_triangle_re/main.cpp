@@ -10,6 +10,7 @@ const char *vertexShaderSource = "#version 330 core\n"
                                  "void main()\n"
                                  "{\n"
                                  "   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n" // 注意我们如何把一个 vec3 作为 vec4 的构造器的参数
+                                //  "   gl_PointSize = 10.0f;"
                                  "}\0";
 
 const char *fragmentShaderSource = "#version 330 core\n"
@@ -44,6 +45,7 @@ int main()
   }
   // 设置视口
   glViewport(0, 0, 800, 600);
+  // glEnable(GL_PROGRAM_POINT_SIZE); // 开启点的大小设置
 
   // 注册窗口变化监听
   glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
@@ -55,15 +57,31 @@ int main()
       0.0f, 0.5f, 0.0f    // top
   };
 
+  /*
+    VBO是 用来存储顶点数据的 内存缓冲，它会在GPU内存（通常被称为显存）中储存大量顶点。
+    VAO是 用来存储状态配置的
+  */
+
   // 创建顶点缓冲对象
   unsigned int VBO;
   glGenBuffers(1, &VBO); // 生成缓冲对象
 
+  // 创建顶点数组对象
+  unsigned int VAO;
+  glGenVertexArrays(1, &VAO); // 生成顶点数组对象
+  glBindVertexArray(VAO);             // 绑定顶点数组对象到目标上
+
   // 绑定缓冲对象
   glBindBuffer(GL_ARRAY_BUFFER, VBO); // 绑定缓冲对象到目标上
-
+  
   // 将顶点数据复制到缓冲对象中
   glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+  // 设置顶点属性指针
+  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+  glEnableVertexAttribArray(0);
+
+  glBindVertexArray(0); // 解绑顶点数组对象
 
   // 创建顶点着色器
   unsigned int vertexShader;
@@ -141,6 +159,24 @@ int main()
     // ...
     glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
+
+    glUseProgram(shaderProgram); // 激活着色器程序
+    glBindVertexArray(VAO);      // 绑定顶点数组对象
+    glDrawArrays(GL_TRIANGLES, 0, 3); // 绘制三角形
+    /*
+      GL_POINTS      // 绘制一系列点
+      GL_LINE_STRIP  // 绘制一个线条
+      GL_LINE_LOOP   // 绘制一个线条，首尾相连
+      GL_LINES       // 绘制一系列单独线段。每两个点作为端点，线段之间不连接
+      GL_LINE_STRIP_ADJACENCY // 绘制一系列连接的线段。前两个点作为第一个线段的端点，之后每两个点作为一个线段的端点，线段之间不连接
+      GL_LINES_ADJACENCY      // 绘制一系列单独线段。每四个点作为两个线段的端点，线段之间不连接
+      GL_TRIANGLE_STRIP       // 绘制一个三角带
+      GL_TRIANGLE_FAN         // 绘制一个三角扇
+      GL_TRIANGLES            // 绘制一系列单独三角形
+      GL_TRIANGLE_STRIP_ADJACENCY // 绘制一个连接的三角带
+    */
+
+    glBindVertexArray(0); // 解绑顶点数组对象
 
     glfwSwapBuffers(window);
     glfwPollEvents();
