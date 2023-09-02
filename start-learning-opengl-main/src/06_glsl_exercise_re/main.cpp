@@ -72,6 +72,8 @@ int main(int argc, char *argv[])
   // 设置线框绘制模式
   glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
+  float xOffset = 0.5f;
+
   while (!glfwWindowShouldClose(window))
   {
     processInput(window);
@@ -82,6 +84,7 @@ int main(int argc, char *argv[])
     glClear(GL_COLOR_BUFFER_BIT);
 
     ourShader.use();
+    ourShader.setFloat("xOffset", xOffset);
     glBindVertexArray(VAO); // 不需要每次都绑定，对于当前程序其实只需要绑定一次就可以了
     // glDrawArrays(GL_POINTS, 0, 6);
     // glDrawArrays(GL_LINE_LOOP, 0, 3);
