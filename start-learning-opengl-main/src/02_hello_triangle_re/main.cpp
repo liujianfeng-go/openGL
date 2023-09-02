@@ -159,6 +159,8 @@ int main()
   glDeleteShader(vertexShader);
   glDeleteShader(fragmentShader);
 
+  glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); // 设置绘制模式为线框模式
+
   while (!glfwWindowShouldClose(window))
   {
     processInput(window);
