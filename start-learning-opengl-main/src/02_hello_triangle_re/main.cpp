@@ -52,9 +52,14 @@ int main()
 
   // 定义顶点数组
   float vertices[] = {
-      -0.5f, -0.5f, 0.0f, // left
-      0.5f, -0.5f, 0.0f,  // right
-      0.0f, 0.5f, 0.0f    // top
+      // 第一个三角形
+    0.5f, 0.5f, 0.0f,   // 右上角
+    0.5f, -0.5f, 0.0f,  // 右下角
+    -0.5f, 0.5f, 0.0f,  // 左上角
+    // 第二个三角形
+    0.5f, -0.5f, 0.0f,  // 右下角
+    -0.5f, -0.5f, 0.0f, // 左下角
+    -0.5f, 0.5f, 0.0f   // 左上角
   };
 
   /*
@@ -162,7 +167,7 @@ int main()
 
     glUseProgram(shaderProgram); // 激活着色器程序
     glBindVertexArray(VAO);      // 绑定顶点数组对象
-    glDrawArrays(GL_TRIANGLES, 0, 3); // 绘制三角形
+    glDrawArrays(GL_TRIANGLES, 0, 6); // 绘制三角形
     /*
       GL_POINTS      // 绘制一系列点
       GL_LINE_STRIP  // 绘制一个线条
