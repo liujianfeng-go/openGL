@@ -168,7 +168,7 @@ int main()
     glDrawArrays(GL_TRIANGLES, 0, 6); // 绘制三角形
     // glDrawArrays(GL_TRIANGLES, 0, 3); // 绘制三角形
     // glDrawArrays(GL_TRIANGLES, 3, 3); // 绘制三角形
-    
+
     /*
       GL_POINTS      // 绘制一系列点
       GL_LINE_STRIP  // 绘制一个线条
@@ -199,7 +199,7 @@ int main()
 
 void framebuffer_size_callback(GLFWwindow *window, int width, int height)
 {
-  glViewport(0, 0, 800, 600);
+  glViewport(0, 0, width, height);
 }
 
 void processInput(GLFWwindow *window)
