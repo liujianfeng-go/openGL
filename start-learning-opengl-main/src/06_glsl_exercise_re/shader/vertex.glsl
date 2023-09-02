@@ -8,5 +8,5 @@ uniform float xOffset;
 
 void main(){
   gl_Position = vec4(aPos.x + xOffset, aPos.y, aPos.z, 1.0f);
-  ourColor = aColor;
+  ourColor = aPos;
 }
