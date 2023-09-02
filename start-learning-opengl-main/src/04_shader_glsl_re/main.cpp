@@ -1,6 +1,7 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <iostream>
+#include <cmath>
 
 void framebuffer_size_callback(GLFWwindow *window, int width, int height);
 void processInput(GLFWwindow *window);
@@ -26,9 +27,10 @@ const char *fragmentShaderSource1 = "#version 330 core\n"
 
 const char *fragmentShaderSource2 = "#version 330 core\n"
                                    "out vec4 FragColor;\n"
+                                   "uniform vec4 ourColor;\n"
                                    "void main()\n"
                                    "{\n"
-                                   "   FragColor = vec4(1.0f, 1.0f, 0.0f, 1.0f);\n"
+                                   "   FragColor = ourColor;\n"
                                    "}\n\0";                            
 
 int main()
@@ -223,7 +225,7 @@ int main()
   glDeleteShader(fragmentShader[0]);
   glDeleteShader(fragmentShader[1]);
 
-  glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); // 设置绘制模式为线框模式
+  // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); // 设置绘制模式为线框模式
 
   while (!glfwWindowShouldClose(window))
   {
@@ -241,7 +243,12 @@ int main()
     // glDrawArrays(GL_TRIANGLES, 0, 3); // 绘制三角形
     // glDrawArrays(GL_TRIANGLES, 3, 3); // 绘制三角形
 
+    float timeValue = glfwGetTime();
+    float greenValue = sin(timeValue) / 2.0f + 0.5f;
+    float redValue = cos(timeValue) / 2.0f + 0.5f;
+    int vertexColorLocation = glGetUniformLocation(shaderProgram[1], "ourColor");
     glUseProgram(shaderProgram[1]); // 激活着色器程序
+    glUniform4f(vertexColorLocation, redValue, greenValue, 0.0f, 1.0f);
     glBindVertexArray(VAO[1]);      // 绑定顶点数组对象
     glDrawArrays(GL_TRIANGLES, 0, 3); // 绘制三角形
 
