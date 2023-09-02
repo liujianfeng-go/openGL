@@ -227,6 +227,8 @@ int main()
 
   // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); // 设置绘制模式为线框模式
 
+  int vertexColorLocation = glGetUniformLocation(shaderProgram[1], "ourColor");
+
   while (!glfwWindowShouldClose(window))
   {
     processInput(window);
@@ -246,7 +248,6 @@ int main()
     float timeValue = glfwGetTime();
     float greenValue = sin(timeValue) / 2.0f + 0.5f;
     float redValue = cos(timeValue) / 2.0f + 0.5f;
-    int vertexColorLocation = glGetUniformLocation(shaderProgram[1], "ourColor");
     glUseProgram(shaderProgram[1]); // 激活着色器程序
     glUniform4f(vertexColorLocation, redValue, greenValue, 0.0f, 1.0f);
     glBindVertexArray(VAO[1]);      // 绑定顶点数组对象
