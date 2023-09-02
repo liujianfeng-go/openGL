@@ -85,7 +85,7 @@ int main()
   glBindBuffer(GL_ARRAY_BUFFER, VBO[0]); // 绑定缓冲对象到目标上
 
   // 将顶点数据复制到缓冲对象中
-  glBufferData(GL_ARRAY_BUFFER, sizeof(vertices1), vertices1, GL_STATIC_DRAW);
+  glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
   // 设置顶点属性指针
   glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
@@ -95,10 +95,10 @@ int main()
   glBindBuffer(GL_ARRAY_BUFFER, VBO[1]); // 绑定缓冲对象到目标上
 
   // 将顶点数据复制到缓冲对象中
-  glBufferData(GL_ARRAY_BUFFER, sizeof(vertices2), vertices2, GL_STATIC_DRAW);
+  glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
   // 设置顶点属性指针
-  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)(sizeof(float) * 9));  // 从缓冲的第9个点开始读取数据
   glEnableVertexAttribArray(0);
 
   glBindVertexArray(0); // 解绑顶点数组对象
