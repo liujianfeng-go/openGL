@@ -7,19 +7,21 @@ void processInput(GLFWwindow *window);
 
 const char *vertexShaderSource = "#version 330 core\n"
                                  "layout (location = 0) in vec2 aPos;\n" // 位置变量的属性位置值为 0
+                                 "out vec4 vertexColor;\n"
                                  "void main()\n"
                                  "{\n"
                                  "   gl_Position = vec4(aPos.x, aPos.y, 0.0, 1.0);\n" // 注意我们如何把一个 vec3 作为 vec4 的构造器的参数
-                                                                                         //  "   gl_PointSize = 10.0f;"
+                                  "  vertexColor = vec4(0.5f, 1.0f, 0.1f, 1.0f);"                                                       //  "   gl_PointSize = 10.0f;"
                                  "}\0";
 
 const char *fragmentShaderSource1 = "#version 330 core\n"
                                    "out vec4 FragColor;\n"
+                                   "in vec4 vertexColor;\n"
                                    "void main()\n"
                                    "{\n"
                                    "   vec4 color = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
                                    // 对颜色使用rgba，或是对纹理坐标使用stpq访问相同的分量
-                                   "   FragColor = vec4(color.r, color.g, color.b, color.a);\n"
+                                   "   FragColor = vertexColor;\n"
                                    "}\n\0";
 
 const char *fragmentShaderSource2 = "#version 330 core\n"
