@@ -6,10 +6,10 @@ void framebuffer_size_callback(GLFWwindow *window, int width, int height);
 void processInput(GLFWwindow *window);
 
 const char *vertexShaderSource = "#version 330 core\n"
-                                 "layout (location = 0) in vec3 aPos;\n" // 位置变量的属性位置值为 0
+                                 "layout (location = 0) in vec2 aPos;\n" // 位置变量的属性位置值为 0
                                  "void main()\n"
                                  "{\n"
-                                 "   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n" // 注意我们如何把一个 vec3 作为 vec4 的构造器的参数
+                                 "   gl_Position = vec4(aPos.x, aPos.y, 0.0, 1.0);\n" // 注意我们如何把一个 vec3 作为 vec4 的构造器的参数
                                                                                          //  "   gl_PointSize = 10.0f;"
                                  "}\0";
 
@@ -57,14 +57,18 @@ int main()
   // 注册窗口变化监听
   glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
-  float vertices[] = {
-      -0.75f, -0.5f, 0.0f,
-      -0.5f, 0.5f, 0.0f,
-      -0.25f,  -0.5f, 0.0f,
+  int nrAttributes;
+  glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &nrAttributes);
+  std::cout << "Maximum nr of vertex attributes supported: " << nrAttributes << std::endl;
 
-      0.25f, -0.5f, 0.0f,
-      0.5f, 0.5f, 0.0f,
-      0.75f,  -0.5f, 0.0f,
+  float vertices[] = {
+      -0.75f, -0.5f,
+      -0.5f, 0.5f,
+      -0.25f,  -0.5f, 
+
+      0.25f, -0.5f, 
+      0.5f, 0.5f, 
+      0.75f,  -0.5f,
   };
 
   float vertices1[] = {
@@ -95,7 +99,7 @@ int main()
   glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
   // 设置顶点属性指针
-  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+  glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0);
   glEnableVertexAttribArray(0);
 
   glBindVertexArray(VAO[1]);             // 绑定顶点数组对象到目标上
@@ -105,7 +109,7 @@ int main()
   glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
   // 设置顶点属性指针
-  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)(sizeof(float) * 9));  // 从缓冲的第9个点开始读取数据
+  glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)(sizeof(float) * 6));  // 从缓冲的第9个点开始读取数据
   glEnableVertexAttribArray(0);
 
   glBindVertexArray(0); // 解绑顶点数组对象
