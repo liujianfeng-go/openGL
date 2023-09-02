@@ -51,9 +51,13 @@ int main()
   glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
   float vertices[] = {
-      -0.5f, -0.5f, 0.0f,
-      0.5f, -0.5f, 0.0f,
-      0.0f,  0.5f, 0.0f
+      -0.75f, -0.5f, 0.0f,
+      -0.5f, 0.5f, 0.0f,
+      -0.25f,  -0.5f, 0.0f,
+
+      0.25f, -0.5f, 0.0f,
+      0.5f, 0.5f, 0.0f,
+      0.75f,  -0.5f, 0.0f,
   };
 
   /*
@@ -161,7 +165,10 @@ int main()
 
     // glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0); // 绘制矩形
 
-    glDrawArrays(GL_TRIANGLES, 0, 3); // 绘制三角形
+    glDrawArrays(GL_TRIANGLES, 0, 6); // 绘制三角形
+    // glDrawArrays(GL_TRIANGLES, 0, 3); // 绘制三角形
+    // glDrawArrays(GL_TRIANGLES, 3, 3); // 绘制三角形
+    
     /*
       GL_POINTS      // 绘制一系列点
       GL_LINE_STRIP  // 绘制一个线条
