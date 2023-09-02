@@ -76,12 +76,10 @@ int main()
     VBO是 用来存储顶点数据的 内存缓冲，它会在GPU内存（通常被称为显存）中储存大量顶点。
     VAO是 用来存储状态配置的
   */
-
+ // 使用两个 VAO 和 VBO绘制两个三角形
   unsigned int VBO[2], VAO[2];
-  glGenBuffers(1, &VBO[0]); // 生成缓冲对象
-  glGenBuffers(1, &VBO[1]); // 生成缓冲对象
-  glGenVertexArrays(1, &VAO[0]); // 生成顶点数组对象
-  glGenVertexArrays(1, &VAO[1]); // 生成顶点数组对象
+  glGenBuffers(2, VBO); // 生成缓冲对象
+  glGenVertexArrays(2, VAO); // 生成顶点数组对象
 
   glBindVertexArray(VAO[0]);             // 绑定顶点数组对象到目标上
   glBindBuffer(GL_ARRAY_BUFFER, VBO[0]); // 绑定缓冲对象到目标上
