@@ -195,6 +195,12 @@ int main()
     glfwPollEvents();
   }
 
+  // 释放资源
+  glDeleteVertexArrays(1, &VAO);
+  glDeleteBuffers(1, &VBO);
+  glDeleteBuffers(1, &EBO); // 解绑索引缓冲对象
+  glDeleteProgram(shaderProgram);
+
   glfwTerminate();
   return 0;
 }
