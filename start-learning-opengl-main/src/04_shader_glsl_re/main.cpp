@@ -17,7 +17,9 @@ const char *fragmentShaderSource1 = "#version 330 core\n"
                                    "out vec4 FragColor;\n"
                                    "void main()\n"
                                    "{\n"
-                                   "   FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
+                                   "   vec4 color = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
+                                   // 对颜色使用rgba，或是对纹理坐标使用stpq访问相同的分量
+                                   "   FragColor = vec4(color.r, color.g, color.b, color.a);\n"
                                    "}\n\0";
 
 const char *fragmentShaderSource2 = "#version 330 core\n"
