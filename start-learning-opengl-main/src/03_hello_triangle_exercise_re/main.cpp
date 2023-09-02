@@ -13,12 +13,19 @@ const char *vertexShaderSource = "#version 330 core\n"
                                                                                          //  "   gl_PointSize = 10.0f;"
                                  "}\0";
 
-const char *fragmentShaderSource = "#version 330 core\n"
+const char *fragmentShaderSource1 = "#version 330 core\n"
                                    "out vec4 FragColor;\n"
                                    "void main()\n"
                                    "{\n"
                                    "   FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
                                    "}\n\0";
+
+const char *fragmentShaderSource2 = "#version 330 core\n"
+                                   "out vec4 FragColor;\n"
+                                   "void main()\n"
+                                   "{\n"
+                                   "   FragColor = vec4(1.0f, 1.0f, 0.0f, 1.0f);\n"
+                                   "}\n\0";                            
 
 int main()
 {
@@ -125,50 +132,88 @@ int main()
   }
 
   // 创建片段着色器
-  unsigned int fragmentShader;
-  fragmentShader = glCreateShader(GL_FRAGMENT_SHADER); // 创建着色器对象
+  unsigned int fragmentShader[2];
+  fragmentShader[0] = glCreateShader(GL_FRAGMENT_SHADER); // 创建着色器对象
 
   // 附加着色器源码到着色器对象上
-  glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
+  glShaderSource(fragmentShader[0], 1, &fragmentShaderSource1, NULL);
   // 编译着色器
-  glCompileShader(fragmentShader);
+  glCompileShader(fragmentShader[0]);
 
   // 检查编译是否成功
-  glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success);
+  glGetShaderiv(fragmentShader[0], GL_COMPILE_STATUS, &success);
   if (!success)
   {
     // 获取错误信息
-    glGetShaderInfoLog(fragmentShader, 512, NULL, infoLog);
+    glGetShaderInfoLog(fragmentShader[0], 512, NULL, infoLog);
+    std::cout << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n"
+              << infoLog << std::endl;
+  }
+
+  fragmentShader[1] = glCreateShader(GL_FRAGMENT_SHADER); // 创建着色器对象
+  // 附加着色器源码到着色器对象上
+  glShaderSource(fragmentShader[1], 1, &fragmentShaderSource2, NULL);
+  // 编译着色器
+  glCompileShader(fragmentShader[1]);
+
+  // 检查编译是否成功
+  glGetShaderiv(fragmentShader[1], GL_COMPILE_STATUS, &success);
+  if (!success)
+  {
+    // 获取错误信息
+    glGetShaderInfoLog(fragmentShader[1], 512, NULL, infoLog);
     std::cout << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n"
               << infoLog << std::endl;
   }
 
   // 创建着色器程序
-  unsigned int shaderProgram;
-  shaderProgram = glCreateProgram(); // 创建着色器程序对象
+  unsigned int shaderProgram[2];
+  shaderProgram[0] = glCreateProgram(); // 创建着色器程序对象
 
   // 将着色器附加到程序对象上
-  glAttachShader(shaderProgram, vertexShader);
-  glAttachShader(shaderProgram, fragmentShader);
+  glAttachShader(shaderProgram[0], vertexShader);
+  glAttachShader(shaderProgram[0], fragmentShader[0]);
   // 链接着色器程序
-  glLinkProgram(shaderProgram);
+  glLinkProgram(shaderProgram[0]);
 
   // 检查链接是否成功
-  glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
+  glGetProgramiv(shaderProgram[0], GL_LINK_STATUS, &success);
   if (!success)
   {
     // 获取错误信息
-    glGetProgramInfoLog(shaderProgram, 512, NULL, infoLog);
+    glGetProgramInfoLog(shaderProgram[0], 512, NULL, infoLog);
     std::cout << "ERROR::SHADER::PROGRAM::LINK_FAILED\n"
               << infoLog << std::endl;
   }
 
   // 激活着色器程序
-  glUseProgram(shaderProgram);
+  glUseProgram(shaderProgram[0]);
+
+  shaderProgram[1] = glCreateProgram(); // 创建着色器程序对象
+
+  // 将着色器附加到程序对象上
+  glAttachShader(shaderProgram[1], vertexShader);
+  glAttachShader(shaderProgram[1], fragmentShader[1]);
+  // 链接着色器程序
+  glLinkProgram(shaderProgram[1]);
+
+  // 检查链接是否成功
+  glGetProgramiv(shaderProgram[1], GL_LINK_STATUS, &success);
+  if (!success)
+  {
+    // 获取错误信息
+    glGetProgramInfoLog(shaderProgram[1], 512, NULL, infoLog);
+    std::cout << "ERROR::SHADER::PROGRAM::LINK_FAILED\n"
+              << infoLog << std::endl;
+  }
+
+  // 激活着色器程序
+  glUseProgram(shaderProgram[1]);
 
   // 删除着色器对象
   glDeleteShader(vertexShader);
-  glDeleteShader(fragmentShader);
+  glDeleteShader(fragmentShader[0]);
+  glDeleteShader(fragmentShader[1]);
 
   glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); // 设置绘制模式为线框模式
 
@@ -181,13 +226,14 @@ int main()
     glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
 
-    glUseProgram(shaderProgram); // 激活着色器程序
+    glUseProgram(shaderProgram[0]); // 激活着色器程序
     glBindVertexArray(VAO[0]);      // 绑定顶点数组对象
     // glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0); // 绘制矩形
     glDrawArrays(GL_TRIANGLES, 0, 3); // 绘制三角形
     // glDrawArrays(GL_TRIANGLES, 0, 3); // 绘制三角形
     // glDrawArrays(GL_TRIANGLES, 3, 3); // 绘制三角形
 
+    glUseProgram(shaderProgram[1]); // 激活着色器程序
     glBindVertexArray(VAO[1]);      // 绑定顶点数组对象
     glDrawArrays(GL_TRIANGLES, 0, 3); // 绘制三角形
 
@@ -215,7 +261,8 @@ int main()
   glDeleteVertexArrays(1, &VAO[1]);
   glDeleteBuffers(1, &VBO[0]);
   glDeleteBuffers(1, &VBO[1]);
-  glDeleteProgram(shaderProgram);
+  glDeleteProgram(shaderProgram[0]);
+  glDeleteProgram(shaderProgram[1]);
 
   glfwTerminate();
   return 0;
