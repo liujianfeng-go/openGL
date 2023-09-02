@@ -249,7 +249,8 @@ int main()
     float greenValue = sin(timeValue) / 2.0f + 0.5f;
     float redValue = cos(timeValue) / 2.0f + 0.5f;
     glUseProgram(shaderProgram[1]); // 激活着色器程序
-    glUniform4f(vertexColorLocation, redValue, greenValue, 0.0f, 1.0f);
+    // 更新uniform颜色之前，先使用glUseProgram激活着色器程序，因为每个着色器程序都有自己的uniform变量
+    glUniform4f(vertexColorLocation, redValue, greenValue, 0.3f, 1.0f);
     glBindVertexArray(VAO[1]);      // 绑定顶点数组对象
     glDrawArrays(GL_TRIANGLES, 0, 3); // 绘制三角形
 
