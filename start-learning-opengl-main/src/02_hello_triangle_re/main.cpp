@@ -10,7 +10,7 @@ const char *vertexShaderSource = "#version 330 core\n"
                                  "void main()\n"
                                  "{\n"
                                  "   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n" // 注意我们如何把一个 vec3 作为 vec4 的构造器的参数
-                                //  "   gl_PointSize = 10.0f;"
+                                                                                         //  "   gl_PointSize = 10.0f;"
                                  "}\0";
 
 const char *fragmentShaderSource = "#version 330 core\n"
@@ -50,16 +50,20 @@ int main()
   // 注册窗口变化监听
   glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
-  // 定义顶点数组
   float vertices[] = {
-      // 第一个三角形
-    0.5f, 0.5f, 0.0f,   // 右上角
-    0.5f, -0.5f, 0.0f,  // 右下角
-    -0.5f, 0.5f, 0.0f,  // 左上角
-    // 第二个三角形
-    0.5f, -0.5f, 0.0f,  // 右下角
-    -0.5f, -0.5f, 0.0f, // 左下角
-    -0.5f, 0.5f, 0.0f   // 左上角
+      0.5f, 0.5f, 0.0f,   // 右上角
+      0.5f, -0.5f, 0.0f,  // 右下角
+      -0.5f, -0.5f, 0.0f, // 左下角
+      -0.5f, 0.5f, 0.0f   // 左上角
+  };
+
+  unsigned int indices[] = {
+      // 注意索引从0开始!
+      // 此例的索引(0,1,2,3)就是顶点数组vertices的下标，
+      // 这样可以由下标代表顶点组合成矩形
+
+      0, 1, 3, // 第一个三角形
+      1, 2, 3  // 第二个三角形
   };
 
   /*
@@ -67,20 +71,20 @@ int main()
     VAO是 用来存储状态配置的
   */
 
-  // 创建顶点缓冲对象
-  unsigned int VBO;
+  unsigned int VBO, VAO, EBO;
   glGenBuffers(1, &VBO); // 生成缓冲对象
-
-  // 创建顶点数组对象
-  unsigned int VAO;
   glGenVertexArrays(1, &VAO); // 生成顶点数组对象
+  glGenBuffers(1, &EBO); // 生成索引缓冲对象
+
   glBindVertexArray(VAO);             // 绑定顶点数组对象到目标上
 
-  // 绑定缓冲对象
   glBindBuffer(GL_ARRAY_BUFFER, VBO); // 绑定缓冲对象到目标上
-  
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO); // 绑定索引缓冲对象到目标上
+
   // 将顶点数据复制到缓冲对象中
   glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+  // 将索引数据复制到索引缓冲对象中
+  glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
   // 设置顶点属性指针
   glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
@@ -155,7 +159,6 @@ int main()
   glDeleteShader(vertexShader);
   glDeleteShader(fragmentShader);
 
-
   while (!glfwWindowShouldClose(window))
   {
     processInput(window);
@@ -167,7 +170,10 @@ int main()
 
     glUseProgram(shaderProgram); // 激活着色器程序
     glBindVertexArray(VAO);      // 绑定顶点数组对象
-    glDrawArrays(GL_TRIANGLES, 0, 6); // 绘制三角形
+
+    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0); // 绘制矩形
+
+    // glDrawArrays(GL_TRIANGLES, 0, 6); // 绘制三角形
     /*
       GL_POINTS      // 绘制一系列点
       GL_LINE_STRIP  // 绘制一个线条
