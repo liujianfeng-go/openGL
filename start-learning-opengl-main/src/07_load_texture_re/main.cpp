@@ -95,9 +95,12 @@ int main(int argc, char *argv[])
   float xOffset = 0.0f;
 
   // 创建纹理对象
-  unsigned int texture;
-  glGenTextures(1, &texture);
-  glBindTexture(GL_TEXTURE_2D, texture);
+  unsigned int texture1, texture2;
+  glGenTextures(1, &texture1);
+  glBindTexture(GL_TEXTURE_2D, texture1);
+
+  // 图像y轴翻转
+  stbi_set_flip_vertically_on_load(true);
 
   // 加载图片
   int width, height, nrChannels;
@@ -123,8 +126,39 @@ int main(int argc, char *argv[])
     std::cout << "Failed to load texture" << std::endl;
   }
 
+
+  glGenTextures(1, &texture2);
+  glBindTexture(GL_TEXTURE_2D, texture2);
+
+  // 加载图片
+  data = stbi_load("./static/texture/awesomeface.png", &width, &height, &nrChannels, 0);
+
+  // 生成纹理
+  if (data)
+  {
+    // 生成纹理
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+    glGenerateMipmap(GL_TEXTURE_2D); // 生成多级渐远纹理
+
+    // 设置纹理环绕方式
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT); // x轴
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT); // y轴
+
+    // 设置纹理过滤方式
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR); // 缩小
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR); // 放大
+  }
+  else
+  {
+    std::cout << "Failed to load texture" << std::endl;
+  }
+
   // 释放图片内存
   stbi_image_free(data);
+
+  ourShader.use();
+  ourShader.setInt("texture1", 0);
+  ourShader.setInt("texture2", 1);
 
   while (!glfwWindowShouldClose(window))
   {
@@ -138,7 +172,10 @@ int main(int argc, char *argv[])
     ourShader.use();
 
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, texture);
+    glBindTexture(GL_TEXTURE_2D, texture1);
+
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D, texture2);
 
     ourShader.setFloat("xOffset", xOffset);
     glBindVertexArray(VAO); // 不需要每次都绑定，对于当前程序其实只需要绑定一次就可以了
