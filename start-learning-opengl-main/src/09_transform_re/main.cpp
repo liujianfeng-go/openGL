@@ -146,29 +146,18 @@ int main(int argc, char *argv[])
   ourShader.setInt("texture2", 1);
 
   float factor = 0.0;
-
-  // 初始化一个四分量的向量
-  glm::vec4 position = glm::vec4(1.0, 1.0, 1.0, 1.0);
   
   // 初始化一个单位矩阵
-  glm::mat4 tranS = glm::mat4(1.0f);
+  glm::mat4 trans = glm::mat4(1.0f);
 
-  // 向右平移一个单位
-  tranS = glm::translate(tranS, glm::vec3(1.0f, 0.0f, 0.0f));
+  trans = glm::rotate(trans, glm::radians(45.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+  trans = glm::scale(trans, glm::vec3(0.5, 0.5, 0.5));
 
-  position = tranS * position; // position = (2.0, 1.0, 1.0, 1.0)
+  // 获取uniform变量的位置值
+  unsigned int transformLoc = glGetUniformLocation(ourShader.ID, "transform");
+  // 将矩阵传递给着色器
+  glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));
 
-  // 缩放
-  tranS = glm::scale(tranS, glm::vec3(2.0f, 3.0f, 4.0f));
-
-  position = tranS * position; // position = (5.0, 3.0, 4.0, 1.0)
-
-  // 旋转
-  tranS = glm::rotate(tranS, glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-
-  position = tranS * position;  // position = (-5.0, 15.0, 16.0, 1.0)
-
-  cout << position.x << "---" << position.y << "---" << position.z << "---" << position.w << endl;
 
   while (!glfwWindowShouldClose(window))
   {
@@ -183,6 +172,13 @@ int main(int argc, char *argv[])
 
     factor = glfwGetTime();
     ourShader.setFloat("factor", factor);
+
+    trans = glm::rotate(trans, glm::radians(factor * 10.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+    trans = glm::scale(trans, glm::vec3(0.5, 0.5, 0.5));
+
+    // 将矩阵传递给着色器
+    glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));
+    trans = glm::mat4(1.0f); // 重置矩阵 防止叠加
 
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, texture1);
