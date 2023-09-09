@@ -3,6 +3,10 @@
 #include <tool/shader.h>
 #include <iostream>
 
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+
 #define STB_IMAGE_IMPLEMENTATION
 #include <tool/stb_image.h>
 
@@ -143,13 +147,36 @@ int main(int argc, char *argv[])
 
   float factor = 0.0;
 
+  // 初始化一个四分量的向量
+  glm::vec4 position = glm::vec4(1.0, 1.0, 1.0, 1.0);
+  
+  // 初始化一个单位矩阵
+  glm::mat4 tranS = glm::mat4(1.0f);
+
+  // 向右平移一个单位
+  tranS = glm::translate(tranS, glm::vec3(1.0f, 0.0f, 0.0f));
+
+  position = tranS * position; // position = (2.0, 1.0, 1.0, 1.0)
+
+  // 缩放
+  tranS = glm::scale(tranS, glm::vec3(2.0f, 3.0f, 4.0f));
+
+  position = tranS * position; // position = (5.0, 3.0, 4.0, 1.0)
+
+  // 旋转
+  tranS = glm::rotate(tranS, glm::radians(90.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+
+  position = tranS * position;  // position = (-5.0, 15.0, 16.0, 1.0)
+
+  cout << position.x << "---" << position.y << "---" << position.z << "---" << position.w << endl;
+
   while (!glfwWindowShouldClose(window))
   {
     processInput(window);
 
     // 渲染指令
     // ...
-    glClearColor(25.0 / 255.0, 25.0 / 255.0, 25.0 / 255.0, 1.0);
+    glClearColor(0.2f, 0.3f, 0.2f, 1.0);
     glClear(GL_COLOR_BUFFER_BIT);
 
     ourShader.use();
