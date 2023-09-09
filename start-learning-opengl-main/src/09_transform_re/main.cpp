@@ -150,8 +150,8 @@ int main(int argc, char *argv[])
   // 初始化一个单位矩阵
   glm::mat4 trans = glm::mat4(1.0f);
 
-  trans = glm::rotate(trans, glm::radians(45.0f), glm::vec3(0.0f, 0.0f, 1.0f));
   trans = glm::scale(trans, glm::vec3(0.5, 0.5, 0.5));
+  trans = glm::rotate(trans, glm::radians(45.0f), glm::vec3(0.0f, 0.0f, 1.0f));
 
   // 获取uniform变量的位置值
   unsigned int transformLoc = glGetUniformLocation(ourShader.ID, "transform");
@@ -173,6 +173,13 @@ int main(int argc, char *argv[])
     factor = glfwGetTime();
     ourShader.setFloat("factor", factor);
 
+    // 先平移 后旋转
+    // trans = glm::rotate(trans, glm::radians(factor * 10.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+    // trans = glm::translate(trans, glm::vec3(0.5f, 0.0f, 0.0f));
+    // trans = glm::scale(trans, glm::vec3(0.5, 0.5, 0.5));
+
+    // 先旋转 后平移
+    trans = glm::translate(trans, glm::vec3(-0.5f, 0.0f, 0.0f));
     trans = glm::rotate(trans, glm::radians(factor * 10.0f), glm::vec3(0.0f, 0.0f, 1.0f));
     trans = glm::scale(trans, glm::vec3(0.5, 0.5, 0.5));
 
@@ -187,6 +194,12 @@ int main(int argc, char *argv[])
     glBindTexture(GL_TEXTURE_2D, texture2);
 
     glBindVertexArray(VAO);
+    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
+    trans = glm::translate(trans, glm::vec3(0.5f, 0.0f, 0.0f));
+    trans = glm::scale(trans, glm::vec3(sin(factor * 1.0f) * 0.5, sin(factor * 1.0f) * 0.5, 0.5));
+    glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));
+    trans = glm::mat4(1.0f); // 重置矩阵 防止叠加
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
     glfwSwapBuffers(window);
