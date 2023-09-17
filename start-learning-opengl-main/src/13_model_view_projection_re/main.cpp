@@ -56,7 +56,7 @@ int main(int argc, char *argv[])
 
   Shader ourShader("./shader/vertex.glsl", "./shader/fragment.glsl");
 
-  PlaneGeometry planeGeometry(0.5, 0.5);
+  PlaneGeometry planeGeometry(1.0, 1.0);
 
   // 生成纹理
   unsigned int texture1, texture2;
@@ -129,6 +129,17 @@ int main(int argc, char *argv[])
 
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, texture2);
+
+    glm::mat4 model = glm::mat4(1.0f);
+    glm::mat4 view = glm::mat4(1.0f);
+    glm::mat4 projection = glm::mat4(1.0f);
+    model = glm::rotate(model, glm::radians(-55.0f), glm::vec3(1.0, 0.0, 0.0));  // 模型矩阵 旋转 55度  x轴
+    view = glm::translate(view, glm::vec3(0.0, 0.0, -3.0));                   // 观察矩阵 平移 z轴  
+    projection = glm::perspective(glm::radians(45.0f), (float)SCREEN_WIDTH / (float)SCREEN_HEIGHT, 0.1f, 100.0f);  // 投影矩阵 透视投影
+
+    ourShader.setMat4("model", model);
+    ourShader.setMat4("view", view);
+    ourShader.setMat4("projection", projection);
 
     glBindVertexArray(planeGeometry.VAO);
 
