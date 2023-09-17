@@ -48,7 +48,7 @@ int main(int argc, char *argv[])
   glEnable(GL_BLEND);
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-  // glEnable(GL_DEPTH_TEST);
+  glEnable(GL_DEPTH_TEST);
   // glDepthFunc(GL_LESS);
 
   // 注册窗口变化监听
@@ -57,6 +57,7 @@ int main(int argc, char *argv[])
   Shader ourShader("./shader/vertex.glsl", "./shader/fragment.glsl");
 
   PlaneGeometry planeGeometry(1.0, 1.0);
+  BoxGeometry boxGeometry(1.0, 1.0, 1.0);
 
   // 生成纹理
   unsigned int texture1, texture2;
@@ -96,7 +97,7 @@ int main(int argc, char *argv[])
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
   // 加载图片
-  data = stbi_load("./static/texture/dot.png", &width, &height, &nrChannels, 0);
+  data = stbi_load("./static/texture/awesomeface.png", &width, &height, &nrChannels, 0);
 
   if (data)
   {
@@ -117,7 +118,7 @@ int main(int argc, char *argv[])
     // 渲染指令
     // ...
     glClearColor(25.0 / 255.0, 25.0 / 255.0, 25.0 / 255.0, 1.0);
-    glClear(GL_COLOR_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     ourShader.use();
 
@@ -133,7 +134,7 @@ int main(int argc, char *argv[])
     glm::mat4 model = glm::mat4(1.0f);
     glm::mat4 view = glm::mat4(1.0f);
     glm::mat4 projection = glm::mat4(1.0f);
-    model = glm::rotate(model, glm::radians(-55.0f), glm::vec3(1.0, 0.0, 0.0));  // 模型矩阵 旋转 55度  x轴
+    model = glm::rotate(model, (float)glfwGetTime() * glm::radians(-55.0f), glm::vec3(1.0, 1.0, 1.0));  // 模型矩阵 旋转 55度  x轴
     view = glm::translate(view, glm::vec3(0.0, 0.0, -3.0));                   // 观察矩阵 平移 z轴  
     projection = glm::perspective(glm::radians(45.0f), (float)SCREEN_WIDTH / (float)SCREEN_HEIGHT, 0.1f, 100.0f);  // 投影矩阵 透视投影
 
@@ -141,9 +142,9 @@ int main(int argc, char *argv[])
     ourShader.setMat4("view", view);
     ourShader.setMat4("projection", projection);
 
-    glBindVertexArray(planeGeometry.VAO);
+    glBindVertexArray(boxGeometry.VAO);
 
-    glDrawElements(GL_TRIANGLES, planeGeometry.indices.size(), GL_UNSIGNED_INT, 0);
+    glDrawElements(GL_TRIANGLES, boxGeometry.indices.size(), GL_UNSIGNED_INT, 0);
     // glDrawElements(GL_POINTS, planeGeometry.indices.size(), GL_UNSIGNED_INT, 0);
     // glDrawElements(GL_LINE_LOOP, planeGeometry.indices.size(), GL_UNSIGNED_INT, 0);
 
@@ -151,7 +152,7 @@ int main(int argc, char *argv[])
     glfwPollEvents();
   }
 
-  planeGeometry.dispose();
+  boxGeometry.dispose();
   glfwTerminate();
   return 0;
 }
