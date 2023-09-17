@@ -111,6 +111,18 @@ int main(int argc, char *argv[])
 
   float factor = 0.0;
 
+  glm::vec3 cubePositions[] = {
+      glm::vec3(0.0f, 0.0f, 0.0f),
+      glm::vec3(2.0f, 5.0f, -15.0f),
+      glm::vec3(-1.5f, -2.2f, -2.5f),
+      glm::vec3(-3.8f, -2.0f, -12.3f),
+      glm::vec3(2.4f, -0.4f, -3.5f),
+      glm::vec3(-1.7f, 3.0f, -7.5f),
+      glm::vec3(1.3f, -2.0f, -2.5f),
+      glm::vec3(1.5f, 2.0f, -2.5f),
+      glm::vec3(1.5f, 0.2f, -1.5f),
+      glm::vec3(-1.3f, 1.0f, -1.5f)};
+
   while (!glfwWindowShouldClose(window))
   {
     processInput(window);
@@ -131,22 +143,26 @@ int main(int argc, char *argv[])
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, texture2);
 
-    glm::mat4 model = glm::mat4(1.0f);
-    glm::mat4 view = glm::mat4(1.0f);
-    glm::mat4 projection = glm::mat4(1.0f);
-    model = glm::rotate(model, (float)glfwGetTime() * glm::radians(-55.0f), glm::vec3(1.0, 1.0, 1.0));  // 模型矩阵 旋转 55度  x轴
-    view = glm::translate(view, glm::vec3(0.0, 0.0, -3.0));                   // 观察矩阵 平移 z轴  
-    projection = glm::perspective(glm::radians(45.0f), (float)SCREEN_WIDTH / (float)SCREEN_HEIGHT, 0.1f, 100.0f);  // 投影矩阵 透视投影
+    for (unsigned int i = 0; i < 10; i++)
+    {
+      glm::mat4 model = glm::mat4(1.0f);
+      glm::mat4 view = glm::mat4(1.0f);
+      glm::mat4 projection = glm::mat4(1.0f);
+      model = glm::translate(model, cubePositions[i]);
+      model = glm::rotate(model, (float)glfwGetTime() * glm::radians(-55.0f), glm::vec3(1.0, 1.0, 1.0));            // 模型矩阵 旋转 55度  x轴                                                       // 模型矩阵 平移 z轴
+      view = glm::translate(view, glm::vec3(0.0f, 0.0f, -5.0f));                                                       // 观察矩阵 平移 z轴
+      projection = glm::perspective(glm::radians(45.0f), (float)SCREEN_WIDTH / (float)SCREEN_HEIGHT, 0.1f, 100.0f); // 投影矩阵 透视投影
 
-    ourShader.setMat4("model", model);
-    ourShader.setMat4("view", view);
-    ourShader.setMat4("projection", projection);
+      ourShader.setMat4("model", model);
+      ourShader.setMat4("view", view);
+      ourShader.setMat4("projection", projection);
 
-    glBindVertexArray(boxGeometry.VAO);
+      glBindVertexArray(boxGeometry.VAO);
 
-    glDrawElements(GL_TRIANGLES, boxGeometry.indices.size(), GL_UNSIGNED_INT, 0);
-    // glDrawElements(GL_POINTS, planeGeometry.indices.size(), GL_UNSIGNED_INT, 0);
-    // glDrawElements(GL_LINE_LOOP, planeGeometry.indices.size(), GL_UNSIGNED_INT, 0);
+      glDrawElements(GL_TRIANGLES, boxGeometry.indices.size(), GL_UNSIGNED_INT, 0);
+      // glDrawElements(GL_POINTS, planeGeometry.indices.size(), GL_UNSIGNED_INT, 0);
+      // glDrawElements(GL_LINE_LOOP, planeGeometry.indices.size(), GL_UNSIGNED_INT, 0);
+    }
 
     glfwSwapBuffers(window);
     glfwPollEvents();
