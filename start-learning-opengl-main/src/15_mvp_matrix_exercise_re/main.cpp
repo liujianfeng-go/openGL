@@ -16,8 +16,8 @@ void framebuffer_size_callback(GLFWwindow *window, int width, int height);
 void processInput(GLFWwindow *window);
 std::string Shader::dirName;
 
-const unsigned int SCREEN_WIDTH = 800;
-const unsigned int SCREEN_HEIGHT = 600;
+int SCREEN_WIDTH = 800;
+int SCREEN_HEIGHT = 600;
 
 using namespace std;
 
@@ -142,7 +142,7 @@ int main(int argc, char *argv[])
       glm::vec3(1.5f, 0.2f, -1.5f),
       glm::vec3(-1.3f, 1.0f, -1.5f)};
 
-  float f = 0.0f;
+  float fov = 45.0f;  // 视椎体的角度
   ImVec4 clear_color = ImVec4(0.21, 0.3, 0.21, 1.0);
   while (!glfwWindowShouldClose(window))
   {
@@ -154,15 +154,15 @@ int main(int argc, char *argv[])
 
     ImGui::Begin("imgui");
     ImGui::Text("%.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-    ImGui::SliderFloat("float", &f, 0.0f, 1.0f);
+    ImGui::SliderFloat("fov", &fov, 0.0f, 360.0f);
+    ImGui::SliderInt("SCREEN_WIDTH", &SCREEN_WIDTH, 1, 1920);
+    ImGui::SliderInt("SCREEN_HEIGHT", &SCREEN_HEIGHT, 1, 1080);
     ImGui::ColorEdit3("clear color", (float *)&clear_color);
     ImGui::End();
 
-    cout << "f = " << f << endl;
-
     // 渲染指令
     // ...
-    glClearColor(25.0 / 255.0, 25.0 / 255.0, 25.0 / 255.0, 1.0);
+    glClearColor(clear_color.x, clear_color.y, clear_color.z, clear_color.w);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     ourShader.use();
@@ -179,7 +179,7 @@ int main(int argc, char *argv[])
     glm::mat4 view = glm::mat4(1.0f);
     view = glm::translate(view, glm::vec3(0.0, 0., -5.0));
     glm::mat4 projection = glm::mat4(1.0f);
-    projection = glm::perspective(glm::radians(45.0f), (float)SCREEN_WIDTH / (float)SCREEN_HEIGHT, 0.1f, 100.0f);
+    projection = glm::perspective(glm::radians(fov), (float)SCREEN_WIDTH / (float)SCREEN_HEIGHT, 0.1f, 100.0f);
 
     ourShader.setMat4("view", view);
     ourShader.setMat4("projection", projection);
