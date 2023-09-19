@@ -192,7 +192,10 @@ int main(int argc, char *argv[])
     {
       glm::mat4 model = glm::mat4(1.0f);
       model = glm::translate(model, cubePositions[i]);
-      model = glm::rotate(model, (float)glfwGetTime() * glm::radians(-55.0f), glm::vec3(1.0, 1.0, 1.0));
+      if (i % 3 == 0 || i == 1)
+      {
+        model = glm::rotate(model, (float)glfwGetTime() * glm::radians(-55.0f), glm::vec3(1.0, 1.0, 1.0));
+      }
       model = glm::scale(model, glm::vec3(0.3, 0.3, 0.3));
       float angle = 20.f * i;
       model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
