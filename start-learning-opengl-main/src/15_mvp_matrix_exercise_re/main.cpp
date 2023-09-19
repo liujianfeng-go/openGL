@@ -144,6 +144,7 @@ int main(int argc, char *argv[])
 
   float fov = 45.0f;  // 视椎体的角度
   ImVec4 clear_color = ImVec4(0.21, 0.3, 0.21, 1.0);
+  float viewPos[] = {0.0, 0.0, -5.0};
   while (!glfwWindowShouldClose(window))
   {
     processInput(window);
@@ -157,6 +158,7 @@ int main(int argc, char *argv[])
     ImGui::SliderFloat("fov", &fov, 0.0f, 360.0f);
     ImGui::SliderInt("SCREEN_WIDTH", &SCREEN_WIDTH, 1, 1920);
     ImGui::SliderInt("SCREEN_HEIGHT", &SCREEN_HEIGHT, 1, 1080);
+    ImGui::SliderFloat3("viewPos", viewPos, -10.0f, 10.0f);
     ImGui::ColorEdit3("clear color", (float *)&clear_color);
     ImGui::End();
 
@@ -177,7 +179,7 @@ int main(int argc, char *argv[])
     glBindTexture(GL_TEXTURE_2D, texture2);
 
     glm::mat4 view = glm::mat4(1.0f);
-    view = glm::translate(view, glm::vec3(0.0, 0., -5.0));
+    view = glm::translate(view, glm::vec3(viewPos[0], viewPos[1], viewPos[2]));
     glm::mat4 projection = glm::mat4(1.0f);
     projection = glm::perspective(glm::radians(fov), (float)SCREEN_WIDTH / (float)SCREEN_HEIGHT, 0.1f, 100.0f);
 
