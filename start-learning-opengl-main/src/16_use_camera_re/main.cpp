@@ -19,6 +19,10 @@ std::string Shader::dirName;
 int SCREEN_WIDTH = 800;
 int SCREEN_HEIGHT = 600;
 
+glm::vec3 cameraPos = glm::vec3(0.0, 0.0, 5.0);  // 摄像机位置
+glm::vec3 cameraFront = glm::vec3(0.0, 0.0, -1.0);  // 摄像机方向
+glm::vec3 cameraUp = glm::vec3(0.0, 1.0, 0.0);  // 摄像机向上的向量
+
 using namespace std;
 
 int main(int argc, char *argv[])
@@ -178,14 +182,15 @@ int main(int argc, char *argv[])
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, texture2);
 
-    float radius = 10.0f;
-    float camX = sin(glfwGetTime()) * radius;
-    float camZ = cos(glfwGetTime()) * radius;
-    glm::mat4 view;
-    view = glm::lookAt(glm::vec3(camX, 0.0, camZ), glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 1.0, 0.0)); 
+    // float radius = 10.0f;
+    // float camX = sin(glfwGetTime()) * radius;
+    // float camZ = cos(glfwGetTime()) * radius;
+    // glm::mat4 view;
+    // view = glm::lookAt(glm::vec3(camX, 0.0, camZ), glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 1.0, 0.0)); 
 
-    // glm::mat4 view = glm::mat4(1.0f);
+    glm::mat4 view = glm::mat4(1.0f);
     // view = glm::translate(view, glm::vec3(viewPos[0], viewPos[1], viewPos[2]));
+    view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
     glm::mat4 projection = glm::mat4(1.0f);
     projection = glm::perspective(glm::radians(fov), (float)SCREEN_WIDTH / (float)SCREEN_HEIGHT, 0.1f, 100.0f);
 
@@ -252,4 +257,16 @@ void processInput(GLFWwindow *window)
   {
     glfwSetWindowShouldClose(window, true);
   }
+
+  float cameraSpeed = 0.05f; // adjust accordingly
+  if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+      cameraPos += cameraSpeed * cameraFront;
+  if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+      cameraPos -= cameraSpeed * cameraFront;
+  if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+      cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+  if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+      cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+  glm::mat4 view = glm::mat4(1.0f);
+  view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
 }
