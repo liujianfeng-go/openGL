@@ -258,7 +258,14 @@ void processInput(GLFWwindow *window)
     glfwSetWindowShouldClose(window, true);
   }
 
-  float cameraSpeed = 0.05f; // adjust accordingly
+  float deltaTime = 0.0f;
+  float lastFrame = 0.0f;
+
+  float currentFrame = glfwGetTime();
+  deltaTime = currentFrame - lastFrame;
+  lastFrame = currentFrame;
+
+  float cameraSpeed = 0.005f * deltaTime; // adjust accordingly
   if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
       cameraPos += cameraSpeed * cameraFront;
   if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
