@@ -171,7 +171,8 @@ int main(int argc, char *argv[])
   // 光照信息
 
   glm::vec3 lightPosition = glm::vec3(1.0, 1.5, 0.0); // 光照位置
-  ourShader.setVec3("lightColor", glm::vec3(0.0f, 1.0f, 0.0f));
+  glm::vec3 lightColor = glm::vec3(0.5, 1.0, 0.0);    // 光照颜色
+  ourShader.setVec3("lightColor", lightColor);
 
   while (!glfwWindowShouldClose(window))
   {
@@ -228,6 +229,7 @@ int main(int argc, char *argv[])
 
     // 绘制光源
     lightObjectShader.use();
+    lightObjectShader.setVec3("lightColor", lightColor);
     lightObjectShader.setMat4("view", view);
     lightObjectShader.setMat4("projection", projection);
 
