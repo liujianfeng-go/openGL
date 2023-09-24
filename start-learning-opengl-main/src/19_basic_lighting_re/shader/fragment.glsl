@@ -19,9 +19,9 @@ void main() {
   vec3 ambient = ambientStrength * lightColor;  // 环境光
 
   // 计算漫反射光照
-  vec3 norm = normalize(outNormal);
-  vec3 lightDir = normalize(lightPos - outFragPos);
-  float diff = max(dot(norm, lightDir), 0.0);
+  vec3 norm = normalize(outNormal);  // 法向量
+  vec3 lightDir = normalize(lightPos - outFragPos);  // 光线
+  float diff = max(dot(norm, lightDir), 0.0);  // 漫反射光 = max(法向量·光线, 0)
   vec3 diffuse = diff * lightColor;  // 漫反射光
 
   // 计算镜面光照
