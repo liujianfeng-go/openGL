@@ -172,6 +172,7 @@ int main(int argc, char *argv[])
 
   glm::vec3 lightPosition = glm::vec3(1.0, 1.5, 0.0); // 光照位置
   ourShader.setVec3("lightColor", glm::vec3(0.0f, 1.0f, 0.0f));
+  ourShader.setFloat("ambientStrength", 0.1f);
 
   while (!glfwWindowShouldClose(window))
   {
