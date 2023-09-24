@@ -17,5 +17,5 @@ void main() {
   gl_Position = projection * view * model * vec4(Position, 1.0f);
   outFragPos = vec3(model * vec4(Position, 1.0));
   outTexCoord = TexCoords;
-  outNormal = Normal;
+  outNormal = mat3(transpose(inverse(model))) * Normal;  // 法线矩阵  逆转置矩阵  用于法线变换
 }

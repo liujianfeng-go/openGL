@@ -171,8 +171,9 @@ int main(int argc, char *argv[])
   // 光照信息
 
   glm::vec3 lightPosition = glm::vec3(1.0, 1.5, 0.0); // 光照位置
-  ourShader.setVec3("lightColor", glm::vec3(0.0f, 1.0f, 0.0f));
-  ourShader.setFloat("ambientStrength", 0.1f);
+  ourShader.setVec3("lightColor", glm::vec3(1.0f, 1.0f, 1.0f));  // 光照颜色
+  ourShader.setFloat("ambientStrength", 0.1f);  // 环境光强度
+  float specularStrength = 0.5f;               // 镜面反射强度  0.0 - 1.0
 
   while (!glfwWindowShouldClose(window))
   {
@@ -188,6 +189,7 @@ int main(int argc, char *argv[])
 
     ImGui::Begin("controls");
     ImGui::Text("%.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+    ImGui::SliderFloat("specularStrength", &specularStrength, 0.0f, 1.0f);
     ImGui::End();
 
     // 渲染指令
@@ -227,6 +229,8 @@ int main(int argc, char *argv[])
 
     ourShader.setMat4("model", model);
     ourShader.setVec3("lightPos", lightPos);
+    ourShader.setVec3("viewPos", camera.Position);
+    ourShader.setFloat("specularStrength", specularStrength);
     glBindVertexArray(boxGeometry.VAO);
     glDrawElements(GL_TRIANGLES, boxGeometry.indices.size(), GL_UNSIGNED_INT, 0);
 
