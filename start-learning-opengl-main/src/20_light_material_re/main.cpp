@@ -171,9 +171,29 @@ int main(int argc, char *argv[])
   // 光照信息
 
   glm::vec3 lightPosition = glm::vec3(1.0, 1.5, 0.0); // 光照位置
-  ourShader.setVec3("lightColor", glm::vec3(1.0f, 1.0f, 1.0f));  // 光照颜色
-  ourShader.setFloat("ambientStrength", 0.1f);  // 环境光强度
+
+  // 修改光照颜色
+  glm::vec3 lightColor;
+  lightColor.x = sin(glfwGetTime() * 2.0f);
+  lightColor.y = sin(glfwGetTime() * 0.7f);
+  lightColor.z = sin(glfwGetTime() * 1.3f);
+  ourShader.setVec3("lightColor", lightColor);  // 光照颜色
+  glm::vec3 diffuseColor = lightColor   * glm::vec3(0.5f); // 降低影响
+  glm::vec3 ambientColor = diffuseColor * glm::vec3(0.2f); // 很低的影响
+
+  ourShader.setFloat("ambientStrength", 0.9f);  // 环境光强度
   float specularStrength = 0.5f;               // 镜面反射强度  0.0 - 1.0
+
+  // 传递材质属性
+  ourShader.setVec3("material.ambient",  1.0f, 0.5f, 0.31f);
+  ourShader.setVec3("material.diffuse",  1.0f, 0.5f, 0.31f);
+  ourShader.setVec3("material.specular", 0.5f, 0.5f, 0.5f);
+  ourShader.setFloat("material.shininess", 32.0f);
+
+  // 传递光源属性
+  ourShader.setVec3("light.ambient",  ambientColor);
+  ourShader.setVec3("light.diffuse",  diffuseColor); // 将光照调暗了一些以搭配场景
+  ourShader.setVec3("light.specular", 1.0f, 1.0f, 1.0f); 
 
   while (!glfwWindowShouldClose(window))
   {
